@@ -42,6 +42,12 @@ function domain_hreflang_page_attachments(array &$attachments) {
 
 /**
  * Outputs the tag.
+ * @param $url
+ *    The URL to output as the href attribute.
+ * @param $hreflang
+ *    The language code to output as the hreflang attribute.
+ * @param $name
+ *    Unique name to assign to this tag.
  */
 function domain_hreflang_tag($url, $hreflang, $name) {
   $tag = [
