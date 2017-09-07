@@ -1,0 +1,14 @@
+{
+  "name": "drupal/domain_hreflang",
+  "type": "drupal-module",
+  "description": "Outputs hreflang meta tags per domain.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/domain_hreflang",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/domain_hreflang",
+    "source": "http://cgit.drupalcode.org/domain_hreflang"
+  },
+  "require": { }
+}
