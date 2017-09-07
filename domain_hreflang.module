@@ -38,6 +38,20 @@ function domain_hreflang_page_attachments(array &$attachments) {
       }
     }
   }
+
+  // Node pages.
+  if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    $values = $node->get('field_domain_access')->getValue();
+    if (count($values) > 1) {
+      foreach ($values as $value) {
+        $domain = \Drupal::service('domain.loader')->load($value['target_id']);
+        $hreflang = $domain->getThirdPartySetting('domain_hreflang', 'hreflang');
+        if ($hreflang) {
+          $attachments['#attached']['html_head'][] = domain_hreflang_tag($domain->getUrl(), $hreflang, 'hreflang_' . $domain->id());
+        }
+      }
+    }
+  }
 }
 
 /**
