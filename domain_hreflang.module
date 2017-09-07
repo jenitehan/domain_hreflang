@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\domain_hreflang\HreflangHelper;
 
 /**
  * Implements hook_help().
@@ -34,7 +35,7 @@ function domain_hreflang_page_attachments(array &$attachments) {
     foreach ($domains as $domain) {
       $hreflang = $domain->getThirdPartySetting('domain_hreflang', 'hreflang');
       if ($hreflang) {
-        $attachments['#attached']['html_head'][] = domain_hreflang_tag($domain->getUrl(), $hreflang, 'hreflang_' . $domain->id());
+        $attachments['#attached']['html_head'][] = HreflangHelper::addTag($domain->getUrl(), $hreflang, 'hreflang_' . $domain->id());
       }
     }
   }
@@ -47,32 +48,11 @@ function domain_hreflang_page_attachments(array &$attachments) {
         $domain = \Drupal::service('domain.loader')->load($value['target_id']);
         $hreflang = $domain->getThirdPartySetting('domain_hreflang', 'hreflang');
         if ($hreflang) {
-          $attachments['#attached']['html_head'][] = domain_hreflang_tag($domain->getUrl(), $hreflang, 'hreflang_' . $domain->id());
+          $attachments['#attached']['html_head'][] = HreflangHelper::addTag($domain->getUrl(), $hreflang, 'hreflang_' . $domain->id());
         }
       }
     }
   }
-}
-
-/**
- * Outputs the tag.
- * @param $url
- *    The URL to output as the href attribute.
- * @param $hreflang
- *    The language code to output as the hreflang attribute.
- * @param $name
- *    Unique name to assign to this tag.
- */
-function domain_hreflang_tag($url, $hreflang, $name) {
-  $tag = [
-    '#tag' => 'link',
-    '#attributes' => [
-      'href' => $url,
-      'rel' => 'alternate',
-      'hreflang' => $hreflang,
-    ],
-  ];
-  return [$tag, $name];
 }
 
 /**
@@ -84,16 +64,7 @@ function domain_hreflang_form_domain_edit_form_alter(&$form, \Drupal\Core\Form\F
   $form['hreflang'] = [
     '#type' => 'select',
     '#title' => t('Hreflang'),
-    '#options' => [
-      'en' => 'en',
-      'en-au' => 'en-au',
-      'en-ca' => 'en-ca',
-      'en-gb' => 'en-gb',
-      'en-ie' => 'en-ie',
-      'en-nz' => 'en-nz',
-      'en-us' => 'en-us',
-      'en-za' => 'en-za',
-    ],
+    '#options' => HreflangHelper::getLangCodes(),
     '#empty_option' => t('- None -'),
     '#default_value' => $domain->getThirdPartySetting('domain_hreflang', 'hreflang'),
   ];
