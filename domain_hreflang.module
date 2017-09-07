@@ -28,8 +28,8 @@ function domain_hreflang_help($route_name, RouteMatchInterface $route_match) {
  */
 function domain_hreflang_page_attachments(array &$attachments) {
   
-  // Front pages.
-  if (\Drupal::service('path.matcher')->isFrontPage()) {
+  // Always output tags for all domains for front page and taxonomy terms.
+  if (\Drupal::service('path.matcher')->isFrontPage() || \Drupal::routeMatch()->getParameter('taxonomy_term')) {
     $domains = \Drupal::service('domain.loader')->loadMultiple();
     foreach ($domains as $domain) {
       $hreflang = $domain->getThirdPartySetting('domain_hreflang', 'hreflang');
@@ -39,7 +39,7 @@ function domain_hreflang_page_attachments(array &$attachments) {
     }
   }
 
-  // Node pages.
+  // Output tags when a node is assigned to more than one domain.
   if ($node = \Drupal::routeMatch()->getParameter('node')) {
     $values = $node->get('field_domain_access')->getValue();
     if (count($values) > 1) {
