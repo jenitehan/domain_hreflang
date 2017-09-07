@@ -65,7 +65,7 @@ function domain_hreflang_form_domain_edit_form_alter(&$form, \Drupal\Core\Form\F
     '#type' => 'select',
     '#title' => t('Hreflang'),
     '#description' => t('The langauge code to use for this domain.'),
-    '#options' => HreflangHelper::getLangCodes(),
+    '#options' => HreflangHelper::langCodes(),
     '#empty_option' => t('- None -'),
     '#default_value' => $domain->getThirdPartySetting('domain_hreflang', 'hreflang'),
   ];

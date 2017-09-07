@@ -28,7 +28,7 @@ class HreflangHelper {
   /**
    * Returns an array of language codes.
    */
-  public static function getLangCodes() {
+  public static function langCodes() {
     return [
       'en' => 'en',
       'en-au' => 'en-au',
