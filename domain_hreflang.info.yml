@@ -2,6 +2,7 @@ name: Domain Hreflang
 type: module
 description: Outputs hreflang meta tags per domain.
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: Domain
 dependencies:
   - domain
