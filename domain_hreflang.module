@@ -28,10 +28,13 @@ function domain_hreflang_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_page_attachments().
  */
 function domain_hreflang_page_attachments(array &$attachments) {
-  
+
   // Always output tags for all domains for front page and taxonomy terms.
   if (\Drupal::service('path.matcher')->isFrontPage() || \Drupal::routeMatch()->getParameter('taxonomy_term')) {
-    $domains = \Drupal::service('domain.loader')->loadMultiple();
+    /** @var \Drupal\domain\DomainStorage $domain_storage */
+    $domain_storage = \Drupal::service('entity_type.manager')->getStorage('domain');
+    $domains = $domain_storage->loadMultiple();
+    /** @var \Drupal\domain\Entity\Domain $domain */
     foreach ($domains as $domain) {
       $hreflang = $domain->getThirdPartySetting('domain_hreflang', 'hreflang');
       if ($hreflang) {
@@ -45,7 +48,10 @@ function domain_hreflang_page_attachments(array &$attachments) {
     $values = $node->get('field_domain_access')->getValue();
     if (count($values) > 1) {
       foreach ($values as $value) {
-        $domain = \Drupal::service('domain.loader')->load($value['target_id']);
+        /** @var \Drupal\domain\DomainStorage $domain_storage */
+        $domain_storage = \Drupal::service('entity_type.manager')->getStorage('domain');
+        /** @var \Drupal\domain\Entity\Domain $domain */
+        $domain = $domain_storage->load($value['target_id']);
         $hreflang = $domain->getThirdPartySetting('domain_hreflang', 'hreflang');
         if ($hreflang) {
           $attachments['#attached']['html_head'][] = HreflangHelper::addTag($domain->getUrl(), $hreflang, 'hreflang_' . $domain->id());
@@ -60,7 +66,7 @@ function domain_hreflang_page_attachments(array &$attachments) {
  */
 function domain_hreflang_form_domain_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   $domain = $form_state->getFormObject()->getEntity();
-  
+
   $form['hreflang'] = [
     '#type' => 'select',
     '#title' => t('Hreflang'),
@@ -69,7 +75,7 @@ function domain_hreflang_form_domain_edit_form_alter(&$form, \Drupal\Core\Form\F
     '#empty_option' => t('- None -'),
     '#default_value' => $domain->getThirdPartySetting('domain_hreflang', 'hreflang'),
   ];
-  
+
   $form['#entity_builders'][] = 'domain_hreflang_form_builder';
 }
 
@@ -81,6 +87,6 @@ function domain_hreflang_form_builder($entity_type, \Drupal\domain\Entity\Domain
     $domain->setThirdPartySetting('domain_hreflang', 'hreflang', $form_state->getValue('hreflang'));
     return;
   }
- 
+
   $domain->unsetThirdPartySetting('domain_hreflang', 'hreflang');
 }
